@@ -9,6 +9,7 @@ Created on Fri Jan 24 13:56:08 2020
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation
+import time
 
 
 class Particle():
@@ -42,7 +43,7 @@ def RungeKutta_step(d_e, y, step):
         
 animation_speed = 1
 animation_acc = 1000 #calculations per simulated second
-fps = 30 #frames per real second
+fps = 60 #frames per real second
 
 
 fig = plt.figure()
@@ -51,10 +52,17 @@ ax = plt.axes(xlim=(0, 10), ylim=(0, 10))
 point, = ax.plot([], [], 'ro', lw=2)
 line, = ax.plot([], [], 'r-', lw=2)
 p = Particle([5, 8])
+loc_time = time.time()
+avg = []
 # initialization function: plot the background of each frame. Repeats every second
 def init():
+    global loc_time
+    global avg
     point.set_data([], [])
     line.set_data([], [])
+    avg.append( fps / (time.time() - loc_time))
+    print(f'fps: {(sum(avg[int(len(avg)/10):])/(len(avg)-int(len(avg)/10))).__round__(1)}')
+    loc_time = time.time()
     return point, line,
 
 # animation function.  This is called sequentially
